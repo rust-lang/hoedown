@@ -60,7 +60,7 @@ static const uint8_t smartypants_cb_chars[UINT8_MAX+1] = {
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 };
 
-static inline int
+static int
 word_boundary(uint8_t c)
 {
 	return c == 0 || isspace(c) || ispunct(c);
@@ -312,6 +312,16 @@ smartypants_cb__ltag(hoedown_buffer *ob, struct smartypants_data *smrt, uint8_t 
 	static const size_t skip_tags_count = 8;
 
 	size_t tag, i = 0;
+
+	/* This is a comment. Copy everything verbatim until --> or EOF is seen. */
+	if (i + 4 < size && memcmp(text, "<!--", 4) == 0) {
+		i += 4;
+		while (i + 3 < size && memcmp(text + i, "-->",  3) != 0)
+			i++;
+		i += 3;
+		hoedown_buffer_put(ob, text, i + 1);
+		return i;
+	}
 
 	while (i < size && text[i] != '>')
 		i++;

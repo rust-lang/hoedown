@@ -7,13 +7,24 @@
 extern "C" {
 #endif
 
-#define HOEDOWN_VERSION "2.0.0"
-#define HOEDOWN_VERSION_MAJOR 2
-#define HOEDOWN_VERSION_MINOR 0
-#define HOEDOWN_VERSION_REVISION 0
 
-extern void
-hoedown_version(int *major, int *minor, int *revision);
+/*************
+ * CONSTANTS *
+ *************/
+
+#define HOEDOWN_VERSION "3.0.5"
+#define HOEDOWN_VERSION_MAJOR 3
+#define HOEDOWN_VERSION_MINOR 0
+#define HOEDOWN_VERSION_REVISION 5
+
+
+/*************
+ * FUNCTIONS *
+ *************/
+
+/* hoedown_version: retrieve Hoedown's version numbers */
+void hoedown_version(int *major, int *minor, int *revision);
+
 
 #ifdef __cplusplus
 }
