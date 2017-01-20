@@ -9,6 +9,11 @@ ifneq ($(OS),Windows_NT)
 	HOEDOWN_CFLAGS += -fPIC
 endif
 
+SONAME = -soname
+ifeq ($(shell uname -s),Darwin)
+	SONAME = -install_name
+endif
+
 HOEDOWN_SRC=\
 	src/autolink.o \
 	src/buffer.o \
@@ -30,7 +35,7 @@ libhoedown.so: libhoedown.so.3
 	ln -f -s $^ $@
 
 libhoedown.so.3: $(HOEDOWN_SRC)
-	$(CC) -Wl,-soname,$(@F) -shared $^ $(LDFLAGS) -o $@
+	$(CC) -Wl,$(SONAME),$(@F) -shared $^ $(LDFLAGS) -o $@
 
 libhoedown.a: $(HOEDOWN_SRC)
 	$(AR) rcs libhoedown.a $^
@@ -50,7 +55,8 @@ src/html_blocks.c: html_block_names.gperf
 
 # Testing
 
-test: hoedown
+test: hoedown libhoedown.a
+	$(CC) test/line.c libhoedown.a -o test/tester
 	python test/runner.py
 
 test-pl: hoedown
